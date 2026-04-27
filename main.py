@@ -3,12 +3,28 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from src.predict import predict_house_price
 
+
+import logging
+
+
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
+
+logging.basicConfig(
+    filename="model/app.log",
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
+
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html"
+    )
+
 
 @app.post("/predict", response_class=HTMLResponse)
 async def predict(request: Request):
@@ -32,6 +48,9 @@ async def predict(request: Request):
     result = predict_house_price(input_data)
 
     return templates.TemplateResponse(
-        "predict.html",
-        {"request": request, "prediction": result}
+        request=request,
+        name="predict.html",
+        context={"prediction": result}
     )
+
+
