@@ -42,3 +42,4 @@ def predict_house_price(data: dict):
     logging.info(f"Final prediction: {final_prediction}")
 
     return final_prediction
+
